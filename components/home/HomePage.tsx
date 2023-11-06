@@ -2,13 +2,13 @@
 import Layout from "@/layout/Layout";
 import { Box } from "@mui/material";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CardSection from "../CardSection/CardSection";
+import LoginModal from "../loginModal/LoginModal";
 import Header from "./children/Header";
 
 const HomePage = () => {
- 
-  
+
 
   return (
     <Layout>
@@ -29,4 +29,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-

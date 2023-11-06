@@ -44,9 +44,6 @@ export default function PodCastDetail({
   useEffect(() => {
     setPodcast(fetchPodcast);
   }, []);
-  // useEffect(() => {
-  //   dispatch(resetCurrentPlaybackTime);
-  // }, [id]);
 
   const handleMouseEnter = () => {
     setShowPlay(true);
@@ -72,6 +69,10 @@ export default function PodCastDetail({
     }
     dispatch(setIsPlaying(!isPlaying));
   };
+  useEffect(() => {
+    dispatch(resetCurrentPlaybackTime);
+  }, [id]);
+
 
   return (
     <Layout>
@@ -165,6 +166,7 @@ export default function PodCastDetail({
             podcast={Podcast}
             isPlaying={isPlaying}
             setIsPlaying={setIsPlaying}
+            id={id}
           />
         </Box>
       </Box>

@@ -25,6 +25,7 @@ export default function DrawerComponent() {
       sx={{ display: "flex", width: "18vw", backgroundColor: "#141423" }}
       variant="permanent"
       anchor="left"
+      className="drawer-parent"
     >
       <List sx={{ padding: "16px 16px 12px 16px" }}>
         <Image src="/podbay.png" alt="" width={50} height={50} />

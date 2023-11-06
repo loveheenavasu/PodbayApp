@@ -6,6 +6,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Link from "next/link";
 import { setData } from "@/redux/Slice";
 import { useDispatch, useSelector } from "react-redux";
+import LoginModal from "../loginModal/LoginModal";
 
 const CardSection = () => {
   const dispatch = useDispatch();
@@ -68,33 +69,39 @@ const CardSection = () => {
           return (
             <>
               <Link href={`podcast/${id}`}>
-                <Card sx={{ maxWidth: 255, mb: 2, background: "transparent" }}>
-                  <CardMedia
-                    sx={{ height: 245 }}
-                    image={data.image}
-                    title="green iguana"
-                  />
-                  <CardContent>
-                    <Typography
-                      component="div"
-                      sx={{ fontSize: "15px", color: "#fff" }}
+                {data?.isFree ? (
+                  <>
+                    <Card
+                      sx={{ maxWidth: 255, mb: 2, background: "transparent" }}
                     >
-                      {`#${data?.id}`}
-                      {data.title.length > 20
-                        ? `${data.title.slice(0, 20)}...`
-                        : data.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ color: fontColor, fontSize: "13px" }}
-                    >
-                      {data.description.length > 20
-                        ? `${data.description.slice(0, 30)}`
-                        : data.description}
-                    </Typography>
-                  </CardContent>
-                </Card>
+                      <CardMedia
+                        sx={{ height: 245 }}
+                        image={data.image}
+                        title="green iguana"
+                      />
+                      <CardContent>
+                        <Typography
+                          component="div"
+                          sx={{ fontSize: "15px", color: "#fff" }}
+                        >
+                          {`#${data?.id}`}
+                          {data.title.length > 20
+                            ? `${data.title.slice(0, 20)}...`
+                            : data.title}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ color: fontColor, fontSize: "13px" }}
+                        >
+                          {data.description.length > 20
+                            ? `${data.description.slice(0, 30)}`
+                            : data.description}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </>
+                ) : null}
               </Link>
             </>
           );

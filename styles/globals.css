@@ -1,9 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Gruppo&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap");
-.css-12i7wg6-MuiPaper-root-MuiDrawer-paper {
-  background-color: #141423;
-  color: #fff;
-  box-shadow: rgb(177 174 174 / 59%) 0px 1px 4px;
+.drawer-parent>div {
+  background-color: #141423 !important;
+  color: #fff !important;
+  box-shadow: rgb(177 174 174 / 59%) 0px 1px 4px !important;
 }
 body {
   margin: 0 !important;
@@ -59,4 +59,9 @@ audio::-webkit-media-controls-panel {
 audio {
   width: 60%;
   height: 100px;
+}
+
+.css-1l8j5k8 {
+  background-color: black;
+  color: #fff;
 }

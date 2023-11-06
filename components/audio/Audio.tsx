@@ -9,6 +9,7 @@ import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import StopIcon from "@mui/icons-material/Stop";
 import {
+  resetCurrentPlaybackTime,
   setCurrentDuration,
   setCurrentPlaybackTime,
   setIsPlaying,
@@ -17,9 +18,8 @@ import {
 } from "@/redux/Slice";
 import { useDispatch, useSelector } from "react-redux";
 
-const Audio = ({ audioRef, podcast }: any) => {
+const Audio = ({ audioRef, podcast, id }: any) => {
   const [currentTime, setCurrentTime] = useState(0);
-  // const [duration, setDuration] = useState(0);
   const dispatch = useDispatch();
   const isPlaying = useSelector((state: any) => state?.data?.isPlaying);
   const selectedId = useSelector((state: any) => state?.data?.selectedId);
@@ -76,12 +76,11 @@ const Audio = ({ audioRef, podcast }: any) => {
     if (audioRef.current) {
       dispatch(setCurrentPlaybackTime(audioRef.current.currentTime));
       dispatch(setCurrentDuration(audioRef?.current?.duration));
-      // setDuration(audioRef.current.duration);
     }
   };
 
   console.log(currentTime, "time");
-
+ 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.addEventListener("timeupdate", updateProgressBar);
@@ -114,15 +113,23 @@ const Audio = ({ audioRef, podcast }: any) => {
 
   const toggleAudio = () => {
     if (isPlaying) {
-      dispatch(setCurrentPlaybackTime(currentTime));
       audioRef.current.pause();
     } else {
-      audioRef.current.currentTime = currentPlaybackTime;
-      audioRef.current.play();
+      if (podcast?.audio && typeof podcast.audio === "string") {
+        audioRef.current.src = podcast?.audio;
+        audioRef.current.play();
+        dispatch(setCurrentPlaybackTime(audioRef.current.currentTime));
+        dispatch(setRecent(podcast));
+        dispatch(setSelectedId(id));
+      } else {
+        console.error("Invalid audio URL");
+      }
     }
     dispatch(setIsPlaying(!isPlaying));
   };
 
+ 
+  
   return (
     <>
       <Box sx={{ position: "relative", display: "flex", width: "100%" }}>
@@ -131,7 +138,7 @@ const Audio = ({ audioRef, podcast }: any) => {
           className="custom-audio-player"
           sx={{ display: "flex", width: "100%" }}
         >
-          <audio ref={audioRef} src={podcast?.audio} style={{ opacity: 0 }} />
+          <audio ref={audioRef} src={podcast?.audio} style={{ opacity: 0 }} key={id}/>
 
           <Grid
             item
