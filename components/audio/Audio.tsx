@@ -127,9 +127,6 @@ const Audio = ({ audioRef, podcast, id }: any) => {
     }
     dispatch(setIsPlaying(!isPlaying));
   };
-
- 
-  
   return (
     <>
       <Box sx={{ position: "relative", display: "flex", width: "100%" }}>

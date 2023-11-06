@@ -6,6 +6,8 @@ import CardMedia from "@mui/material/CardMedia";
 import Link from "next/link";
 import { setData } from "@/redux/Slice";
 import { useDispatch, useSelector } from "react-redux";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 import LoginModal from "../loginModal/LoginModal";
 
 const CardSection = () => {
@@ -13,8 +15,10 @@ const CardSection = () => {
   const podcasts: any = useSelector(
     (state: { data: { jsonData: any } }) => state?.data?.jsonData
   );
+  const [loading, setLoading] = useState(false);
   const fetchPodcasts = () => {
     const jsonUrl = "/podbay.json";
+    setLoading(true);
 
     fetch(jsonUrl)
       .then((response) => {
@@ -24,6 +28,7 @@ const CardSection = () => {
         return response.json();
       })
       .then((data) => {
+        setLoading(false);
         dispatch(setData(data));
         console.log(data, "data");
       })
@@ -31,7 +36,6 @@ const CardSection = () => {
         throw new Error(err);
       });
   };
-
   useEffect(() => {
     fetchPodcasts();
   }, []);
@@ -62,50 +66,67 @@ const CardSection = () => {
           justifyContent: "space-between",
         }}
       >
-        {podcasts?.map((data: any) => {
-          const fontColor = getRandomColor();
-          const { id } = data;
+        {loading ? (
+          <>
+            <Backdrop
+              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={true}
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
+          </>
+        ) : (
+          <>
+            {podcasts?.map((data: any) => {
+              const fontColor = getRandomColor();
+              const { id } = data;
 
-          return (
-            <>
-              <Link href={`podcast/${id}`}>
-                {data?.isFree ? (
-                  <>
-                    <Card
-                      sx={{ maxWidth: 255, mb: 2, background: "transparent" }}
-                    >
-                      <CardMedia
-                        sx={{ height: 245 }}
-                        image={data.image}
-                        title="green iguana"
-                      />
-                      <CardContent>
-                        <Typography
-                          component="div"
-                          sx={{ fontSize: "15px", color: "#fff" }}
+              return (
+                <>
+                  <Link href={`podcast/${id}`}>
+                    {data?.isFree ? (
+                      <>
+                        <Card
+                          sx={{
+                            maxWidth: 255,
+                            mb: 2,
+                            background: "transparent",
+                          }}
                         >
-                          {`#${data?.id}`}
-                          {data.title.length > 20
-                            ? `${data.title.slice(0, 20)}...`
-                            : data.title}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          sx={{ color: fontColor, fontSize: "13px" }}
-                        >
-                          {data.description.length > 20
-                            ? `${data.description.slice(0, 30)}`
-                            : data.description}
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </>
-                ) : null}
-              </Link>
-            </>
-          );
-        })}
+                          <CardMedia
+                            sx={{ height: 245 }}
+                            image={data.image}
+                            title="green iguana"
+                          />
+                          <CardContent>
+                            <Typography
+                              component="div"
+                              sx={{ fontSize: "15px", color: "#fff" }}
+                            >
+                              {`#${data?.id}`}
+                              {data.title.length > 20
+                                ? `${data.title.slice(0, 20)}...`
+                                : data.title}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              sx={{ color: fontColor, fontSize: "13px" }}
+                            >
+                              {data.description.length > 20
+                                ? `${data.description.slice(0, 30)}`
+                                : data.description}
+                            </Typography>
+                          </CardContent>
+                        </Card>
+                      </>
+                    ) : null}
+                  </Link>
+                </>
+              );
+            })}
+          </>
+        )}
       </Box>
     </>
   );
