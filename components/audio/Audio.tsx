@@ -151,11 +151,11 @@ const Audio = ({ audioRef, podcast, id }: any) => {
           >
             <img src={podcast?.image} alt="" height={70} width={80} />
             <Box>
-              <Typography sx={{ fontSize: "13px", mb: 0 }}>
+              <Typography sx={{ fontSize: "13px", mb: 0 , color:'#fff'}}>
                 {podcast?.title}
               </Typography>
               <Typography
-                sx={{ fontSize: "11px" }}
+                sx={{ fontSize: "11px", color:'#fff' }}
               >{`${podcast?.description.slice(1, 24)}...`}</Typography>
             </Box>
           </Grid>
@@ -226,7 +226,7 @@ const Audio = ({ audioRef, podcast, id }: any) => {
                   className="time-display"
                   style={{ position: "absolute", top: "20px", left: "25%" }}
                 >
-                  <Typography sx={{ fontSize: "12px" }}>
+                  <Typography sx={{ fontSize: "12px", color:'#fff' }}>
                     {duration && currentPlaybackTime ? (
                       <>
                         {formatTime(currentPlaybackTime)} /{" "}
