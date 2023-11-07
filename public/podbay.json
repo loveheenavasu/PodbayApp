@@ -12,28 +12,25 @@
     "audio": "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
     "title": "Ghost Story",
     "description": "Host Tristan Redman is a seasoned journalist who doesn’t believe in ghosts. But weird things happened in the bedroom he lived in as a teenager.",
-    "id": 3, 
+    "id": 3,
     "isFree": true
-
   },
   {
     "image": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts126/v4/29/80/bd/2980bdc7-1f74-ef56-6232-c17339ad2aa8/mza_8703648495291299163.jpeg/600x600bb.jpg",
     "audio": "https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg",
     "title": "Boss Class from The Economist",
     "description": "The workplace keeps changing and managers have to keep up. The best bosses create systems for solving problems old and new—from navigating working-from-home demands to hiring the right people, from running good meetings to managing themselves.",
-    "id": 2, 
-    "isFree": true
-
+    "id": 2,
+    "isFree": false
   },
- 
+
   {
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxJUz9bCt1UAG-OscLRxjqRGanuHFMaXlqaWgAnnS2Nynzob-3yXZoL0UwPjycuBPovqI&usqp=CAU",
     "audio": "./sunshine-jaunt-163686.mp3",
     "title": "New Heights with Jason and Travis Kelce",
     "description": "Football’s funniest family duo — Jason Kelce from the Philadelphia Eagles and Travis Kelce from the Kansas City Chiefs — team up to provide next-level access to life in the league as it unfolds.",
     "id": 4,
-    "isFree": true
-
+    "isFree": false
   },
   {
     "image": "https://i.ytimg.com/vi/GDU-lacD8mg/maxresdefault.jpg",
@@ -43,5 +40,9 @@
     "id": 5,
     "isFree": false
   }
+
+ 
+
+
 
 ]

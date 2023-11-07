@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import * as React from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -28,7 +27,7 @@ export default function RecentPocast({ params }: { params: { slug: string } }) {
 
   return (
     <Layout>
-      {selectedId ? (
+      {Number(selectedId) ? (
         <Box
           sx={{
             display: "flex",

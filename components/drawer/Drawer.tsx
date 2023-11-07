@@ -16,10 +16,9 @@ import WidgetsIcon from "@mui/icons-material/Widgets";
 import Image from "next/image";
 import Link from "next/link";
 
-
-
-
 export default function DrawerComponent() {
+
+ 
   return (
     <Drawer
       sx={{ display: "flex", width: "18vw", backgroundColor: "#141423" }}
@@ -93,10 +92,13 @@ export default function DrawerComponent() {
             <ListItemIcon sx={{ minWidth: "40px" }}>
               <AccessTimeIcon sx={{ color: "#fff", fontSize: "15px" }} />
             </ListItemIcon>
-            <Link href="/recents" style={{ textDecoration: "none", color: "#fff" }}>
-                {" "}
-                Recents
-              </Link>
+            <Link
+              href="/recents"
+              style={{ textDecoration: "none", color: "#fff" }}
+            >
+              {" "}
+              Recents
+            </Link>
           </ListItemButton>
         </ListItem>
       </List>

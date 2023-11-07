@@ -1,50 +1,70 @@
 "use client";
 import * as React from "react";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Divider, FormLabel } from "@mui/material";
+import { Divider } from "@mui/material";
 import AppleIcon from "@mui/icons-material/Apple";
-
-// TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
+import login from "@/services/authentication";
+import { useDispatch } from "react-redux";
+import { setSelectedId } from "@/redux/Slice";
 
 export default function LoginSection() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+  const router = useRouter();
+  const [formData, setFormData] = React.useState({
+    email: "",
+    password: "",
+  });
+  const dispatch = useDispatch();
+
+  const handleChange = (event: { target: { name: any; value: any } }) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
     });
   };
 
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+
+    const response = await login(formData.email, formData.password);
+
+    if (response.success) {
+      const token = JSON.stringify(response?.data?.token);
+      Cookies.set("authToken", token);
+      const userData = JSON.stringify(response?.data?.user);
+      Cookies.set("user", userData);
+      const redirectTo: any = router.query.redirect || "/";
+      dispatch(setSelectedId(null));
+
+      router.push(redirectTo);
+    } else {
+      console.log("Error");
+    }
+  };
+
   return (
-    // <ThemeProvider theme={defaultTheme} >
     <>
       <Container
         component="main"
-        sx={{ background: "#09070d", width: "490px",mt:7 }}
+        sx={{ background: "#09070d", width: "490px", mt: 7 }}
       >
         <CssBaseline />
         <Box
           sx={{
             marginTop: 2,
-            marginBottom:2,
+            marginBottom: 2,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            
           }}
         >
           <Box
@@ -80,7 +100,6 @@ export default function LoginSection() {
               LOG IN TO PODBAY
             </Typography>
           </Box>
-          {/* <hr  style={{background:'rgb(72, 73, 81)', width:'100%', color:'rgb(72, 73, 81)'}}/> */}
 
           <Box
             component="form"
@@ -90,21 +109,18 @@ export default function LoginSection() {
           >
             <label>EMAIL</label>
             <TextField
+              value={formData?.email}
+              onChange={handleChange}
               margin="normal"
               required
               fullWidth
               id="email"
-              //   label="Email Address"
               name="email"
               autoComplete="email"
               autoFocus
               size="small"
               placeholder="Email Address"
               sx={{
-                // padding: 10px 15px;
-                // display: block;
-                // width: 100%;
-                // text-align: inherit;
                 marginTop: 0,
                 border: "1px solid rgb(72, 73, 81)",
                 background: " transparent",
@@ -124,21 +140,18 @@ export default function LoginSection() {
             <label>PASSWORD</label>
 
             <TextField
+              value={formData?.password}
+              onChange={handleChange}
               margin="normal"
               required
               fullWidth
               placeholder="Password"
               name="password"
-              //   label="Password"
               type="password"
               id="password"
               autoComplete="current-password"
               size="small"
               sx={{
-                // padding: 10px 15px;
-                // display: block;
-                // width: 100%;
-                // text-align: inherit;
                 marginTop: 0,
                 border: "1px solid rgb(72, 73, 81)",
                 background: " transparent",
@@ -188,7 +201,7 @@ export default function LoginSection() {
             <Divider sx={{ color: "#fff" }} />
             <Grid
               container
-              sx={{ textAlign: "center", justifyContent: "center", mt:2 }}
+              sx={{ textAlign: "center", justifyContent: "center", mt: 2 }}
             >
               <Grid item>
                 <Typography sx={{ color: "rgb(72, 73, 81)", fontSize: "15px" }}>
@@ -206,9 +219,6 @@ export default function LoginSection() {
           </Box>
         </Box>
       </Container>
-      {/* <Divider /> */}
     </>
-
-    // </ThemeProvider>
   );
 }

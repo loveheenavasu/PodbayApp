@@ -5,6 +5,8 @@ import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import HomePage from "@/components/home/HomePage";
 import { Box } from "@mui/material";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const inter = Inter({ subsets: ["latin"] });
 

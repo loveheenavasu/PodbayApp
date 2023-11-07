@@ -13,6 +13,7 @@ import Audio from "@/components/audio/Audio";
 import { useDispatch, useSelector } from "react-redux";
 import {
   resetCurrentPlaybackTime,
+  setCurrentDuration,
   setCurrentPlaybackTime,
   setData,
   setIsPlaying,
@@ -21,6 +22,9 @@ import {
 } from "@/redux/Slice";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import Header from "@/components/home/children/Header";
+import LoginModal from "@/components/loginModal/LoginModal";
+import Cookies from "js-cookie";
 
 export default function PodCastDetail({
   params,
@@ -28,18 +32,34 @@ export default function PodCastDetail({
   params: { slug: string };
 }) {
   const router = useRouter();
-  const selectedId = useSelector((state: any) => state?.data?.selectedId);
   const isPlaying = useSelector((state: any) => state?.data?.isPlaying);
   const audioRef = React.useRef<any>();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
-
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [open, setOpen] = React.useState(false);
   const [Podcast, setPodcast] = useState<any>(null);
   const [showPlay, setShowPlay] = useState(false);
   const id = router?.query?.slug;
   const podcastsData = useSelector(
     (state: { data: { jsonData: any } }) => state?.data?.jsonData
   );
+
+  const [userData, setUserData] = React.useState(null);
+
+  React.useEffect(() => {
+    const userData = Cookies.get("user");
+    if (userData) {
+      try {
+        const parsedData = JSON.parse(userData);
+        setUserData(parsedData);
+      } catch (error) {
+        console.error("Error parsing 'user' cookie:", error);
+      }
+    } else {
+      console.error("The 'user' cookie is not set or is empty.");
+    }
+  }, []);
 
   const fetchPodcasts = () => {
     const jsonUrl = "/podbay.json";
@@ -76,6 +96,10 @@ export default function PodCastDetail({
       }
     }
   }, [id, podcastsData]);
+  useEffect(() => {
+    dispatch(setCurrentPlaybackTime(0));
+    dispatch(setCurrentDuration(0));
+  }, [id]);
 
   const handleMouseEnter = () => {
     setShowPlay(true);
@@ -84,8 +108,6 @@ export default function PodCastDetail({
   const handleMouseLeave = () => {
     setShowPlay(false);
   };
-
-  console.log(id, "id", podcastsData, "podcastdata");
 
   const toggleAudio = () => {
     if (isPlaying) {
@@ -106,9 +128,36 @@ export default function PodCastDetail({
   useEffect(() => {
     dispatch(resetCurrentPlaybackTime);
   }, [id]);
+  useEffect(() => {
+    dispatch(setSelectedId(id));
+    dispatch(setRecent(Podcast))
+  }, [id,Podcast]);
+
+  
+
+  useEffect(() => {
+    let timer: string | number | NodeJS.Timeout | undefined;
+
+    if (isPlaying && !userData) {
+      timer = setInterval(() => {
+        toggleAudio();
+        audioRef?.current?.pause();
+        setIsPlaying(false);
+        setOpen(true);
+        setShowLoginPopup(true);
+      }, 10000);
+    }
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [isPlaying, audioRef]);
 
   return (
     <Layout>
+      {showLoginPopup && !userData && (
+        <LoginModal open={open} setOpen={setOpen} />
+      )}
       {loading ? (
         <Box
           sx={{
@@ -117,6 +166,7 @@ export default function PodCastDetail({
             flexDirection: "column",
             background: "#1c1b2e",
             margin: 0,
+            height: "100vh",
             width: "100%",
             padding: "27px 13px",
           }}
@@ -139,8 +189,10 @@ export default function PodCastDetail({
               margin: 0,
               width: "100%",
               padding: "27px 13px",
+              position: "relative",
             }}
           >
+            <Header />
             <Card
               sx={{
                 maxWidth: "95%",
@@ -211,10 +263,11 @@ export default function PodCastDetail({
             <Box
               sx={{
                 position: "absolute",
-                bottom: 0,
+                bottom: "0px",
                 width: "100%",
                 left: "0%",
                 background: "#5e304d",
+                padding: "10px 0",
               }}
             >
               <Audio
@@ -223,6 +276,7 @@ export default function PodCastDetail({
                 isPlaying={isPlaying}
                 setIsPlaying={setIsPlaying}
                 id={id}
+                userData={userData}
               />
             </Box>
           </Box>

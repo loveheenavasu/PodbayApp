@@ -9,7 +9,6 @@ import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import StopIcon from "@mui/icons-material/Stop";
 import {
-  resetCurrentPlaybackTime,
   setCurrentDuration,
   setCurrentPlaybackTime,
   setIsPlaying,
@@ -79,8 +78,7 @@ const Audio = ({ audioRef, podcast, id }: any) => {
     }
   };
 
-  console.log(currentTime, "time");
- 
+
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.addEventListener("timeupdate", updateProgressBar);
@@ -118,15 +116,16 @@ const Audio = ({ audioRef, podcast, id }: any) => {
       if (podcast?.audio && typeof podcast.audio === "string") {
         audioRef.current.src = podcast?.audio;
         audioRef.current.play();
-        dispatch(setCurrentPlaybackTime(audioRef.current.currentTime));
-        dispatch(setRecent(podcast));
-        dispatch(setSelectedId(id));
+        // dispatch(setCurrentPlaybackTime(audioRef.current.currentTime));
+        // dispatch(setRecent(podcast));
+        // dispatch(setSelectedId(id));
       } else {
         console.error("Invalid audio URL");
       }
     }
     dispatch(setIsPlaying(!isPlaying));
   };
+
   return (
     <>
       <Box sx={{ position: "relative", display: "flex", width: "100%" }}>
@@ -135,7 +134,12 @@ const Audio = ({ audioRef, podcast, id }: any) => {
           className="custom-audio-player"
           sx={{ display: "flex", width: "100%" }}
         >
-          <audio ref={audioRef} src={podcast?.audio} style={{ opacity: 0 }} key={id}/>
+          <audio
+            ref={audioRef}
+            src={podcast?.audio}
+            style={{ opacity: 0 }}
+            key={id}
+          />
 
           <Grid
             item
@@ -148,11 +152,11 @@ const Audio = ({ audioRef, podcast, id }: any) => {
           >
             <img src={podcast?.image} alt="" height={70} width={80} />
             <Box>
-              <Typography sx={{ fontSize: "13px", mb: 0 , color:'#fff'}}>
+              <Typography sx={{ fontSize: "13px", mb: 0, color: "#fff" }}>
                 {podcast?.title}
               </Typography>
               <Typography
-                sx={{ fontSize: "11px", color:'#fff' }}
+                sx={{ fontSize: "11px", color: "#fff" }}
               >{`${podcast?.description.slice(1, 24)}...`}</Typography>
             </Box>
           </Grid>
@@ -223,7 +227,7 @@ const Audio = ({ audioRef, podcast, id }: any) => {
                   className="time-display"
                   style={{ position: "absolute", top: "20px", left: "25%" }}
                 >
-                  <Typography sx={{ fontSize: "12px", color:'#fff' }}>
+                  <Typography sx={{ fontSize: "12px", color: "#fff" }}>
                     {duration && currentPlaybackTime ? (
                       <>
                         {formatTime(currentPlaybackTime)} /{" "}
@@ -249,7 +253,7 @@ const Audio = ({ audioRef, podcast, id }: any) => {
               <Button onClick={decreaseSpeed} disabled={currentSpeed <= 1}>
                 <VolumeMute sx={{ color: "#fff" }} fontSize="small" />
               </Button>
-              <p> {currentSpeed}%</p>
+              <Typography sx={{ color: "#fff" }}> {currentSpeed}%</Typography>
               <Button onClick={increaseSpeed} disabled={currentSpeed >= 100}>
                 <VolumeUpIcon sx={{ color: "#fff" }} fontSize="small" />
               </Button>
