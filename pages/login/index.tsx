@@ -1,6 +1,5 @@
 "use client";
-import Header from "@/components/home/children/Header";
-import LoginSection from "@/components/Login/LoginSection";
+import LoginSection from "@/components/login/LoginSection";
 import Layout from "@/layout/Layout";
 import { Box } from "@mui/material";
 import React from "react";
@@ -19,7 +18,6 @@ const Login = () => {
           padding: "27px 13px",
         }}
       >
-        <Header />
         <LoginSection />
       </Box>
     </Layout>

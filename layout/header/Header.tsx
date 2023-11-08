@@ -11,12 +11,17 @@ import {
   setCurrentDuration,
   setCurrentPlaybackTime,
   setSelectedId,
+  setUserData,
 } from "@/redux/Slice";
 import { useDispatch } from "react-redux";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import theme from "@/theme/Theme";
+import { RootState } from "@/redux/Store";
+import { useSelector } from "react-redux";
+import { UserData } from "@/types/Types";
 
 const Header = () => {
   const handleLoginClick = () => {
@@ -27,7 +32,10 @@ const Header = () => {
   const handleGoBack = () => {
     router.back();
   };
-  const [userData, setUserData] = React.useState<any>(null);
+  const userData = useSelector(
+    (state: RootState) => state?.data?.userData
+  ) as unknown as UserData;
+
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -37,41 +45,15 @@ const Header = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  React.useEffect(() => {
-    const userData = Cookies.get("user");
-    if (userData) {
-      try {
-        const parsedData = JSON.parse(userData);
-        setUserData(parsedData);
-      } catch (error) {
-        console.error("Error parsing 'user' cookie:", error);
-      }
-    } else {
-      console.error("The 'user' cookie is not set or is empty.");
-    }
-  }, []);
 
-  React.useEffect(() => {
-    const userData = Cookies.get("user");
-    if (userData) {
-      try {
-        const parsedData = JSON.parse(userData);
-        setUserData(parsedData);
-      } catch (error) {
-        console.error("Error parsing 'user' cookie:", error);
-      }
-    } else {
-      console.error("The 'user' cookie is not set or is empty.");
-    }
-  }, []);
   const handleLogout = () => {
     if (Cookies.get("authToken") && Cookies.get("user")) {
       Cookies.remove("authToken");
       Cookies.remove("user");
-      setUserData(null);
       dispatch(setCurrentPlaybackTime(0));
       dispatch(setCurrentDuration(0));
       dispatch(setSelectedId(null));
+      dispatch(setUserData(null));
       toast.success(`You Logged out Sucessfully`, {
         duration: 60000,
         position: "top-right",
@@ -97,10 +79,16 @@ const Header = () => {
             }}
           >
             <Button variant="text" onClick={handleGoBack}>
-              <KeyboardArrowLeftIcon fontSize="large" sx={{ color: "gray" }} />
+              <KeyboardArrowLeftIcon
+                fontSize="large"
+                sx={{ color: theme.colors.TextGray }}
+              />
             </Button>
             <Button variant="text">
-              <KeyboardArrowRightIcon fontSize="large" sx={{ color: "gray" }} />
+              <KeyboardArrowRightIcon
+                fontSize="large"
+                sx={{ color: theme.colors.TextGray }}
+              />
             </Button>
           </Box>
         </Grid>
@@ -108,7 +96,7 @@ const Header = () => {
           <Box
             sx={{
               display: "flex",
-              justifyContent: userData ? "end":"center",
+              justifyContent: userData ? "end" : "center",
               alignItems: "center",
             }}
           >
@@ -151,7 +139,6 @@ const Header = () => {
                 <Menu
                   id="basic-menu"
                   anchorEl={anchorEl}
-                  // sx={{background:'black'}}
                   open={open}
                   onClose={handleClose}
                   MenuListProps={{
@@ -172,7 +159,7 @@ const Header = () => {
               <Button
                 variant="contained"
                 sx={{
-                  backgroundColor: "#355c80",
+                  backgroundColor: theme.colors.BackgroundBtn,
                   fontSize: "14px",
                   textTransform: "capitalize",
                   mr: 1,
@@ -184,7 +171,7 @@ const Header = () => {
               <Button
                 variant="contained"
                 sx={{
-                  backgroundColor: "#355c80",
+                  backgroundColor: theme.colors.BackgroundBtn,
                   fontSize: "14px",
                   textTransform: "capitalize",
                   ml: 1,

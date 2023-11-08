@@ -15,14 +15,16 @@ import IconButton from "@mui/material/IconButton";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import Image from "next/image";
+import { PodcastData } from "@/types/Types";
+import { RootState } from "@/redux/Store";
 
 export default function RecentPocast({ params }: { params: { slug: string } }) {
   const router = useRouter();
   const theme = useTheme();
-  const selectedId = useSelector((state: any) => state?.data?.selectedId);
+  const selectedId = useSelector((state: RootState) => state?.data?.selectedId);
 
   const recentData = useSelector(
-    (state: { data: { recent: any } }) => state?.data?.recent
+    (state: { data: { recent: PodcastData } }) => state?.data?.recent
   );
 
   return (

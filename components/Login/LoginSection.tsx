@@ -15,16 +15,20 @@ import { useRouter } from "next/router";
 import login from "@/services/authentication";
 import { useDispatch } from "react-redux";
 import { setSelectedId } from "@/redux/Slice";
+import theme from "@/theme/Theme";
+import { FormData } from "@/types/Types";
+import { toast, ToastOptions } from "react-toastify";
+
 
 export default function LoginSection() {
   const router = useRouter();
-  const [formData, setFormData] = React.useState({
+  const [formData, setFormData] = React.useState<FormData>({
     email: "",
     password: "",
   });
   const dispatch = useDispatch();
 
-  const handleChange = (event: { target: { name: any; value: any } }) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormData({
       ...formData,
@@ -42,10 +46,13 @@ export default function LoginSection() {
       Cookies.set("authToken", token);
       const userData = JSON.stringify(response?.data?.user);
       Cookies.set("user", userData);
-      const redirectTo: any = router.query.redirect || "/";
+      const redirectTo: any  = router.query.redirect || "/";
       dispatch(setSelectedId(null));
-
       router.push(redirectTo);
+      toast.success(`You Login  Sucessfully`, {
+        duration: 60000,
+        position: "top-right",
+      } as ToastOptions);
     } else {
       console.log("Error");
     }
@@ -79,7 +86,7 @@ export default function LoginSection() {
             <Typography
               component="h1"
               sx={{
-                color: "#fff",
+                color: theme.colors.TextPrimary,
                 fontFamily: " DM Serif Display, serif",
                 textAlign: "left",
               }}
@@ -190,15 +197,14 @@ export default function LoginSection() {
               variant="contained"
               sx={{
                 mt: 2,
-                // mb: 2,
-                background: "black",
+                background: theme.colors.Black,
                 color: "#fff",
                 textTransform: "capitalize",
               }}
             >
               <AppleIcon sx={{ mr: 1 }} /> continue with Apple
             </Button>
-            <Divider sx={{ color: "#fff" }} />
+            <Divider sx={{ color: theme.colors.TextPrimary }} />
             <Grid
               container
               sx={{ textAlign: "center", justifyContent: "center", mt: 2 }}

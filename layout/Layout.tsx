@@ -1,48 +1,32 @@
 "use client";
 import Audio from "@/components/audio/Audio";
-import { setSelectedId } from "@/redux/Slice";
+import { RootState } from "@/redux/Store";
+import theme from "@/theme/Theme";
+import { Podcast, PodcastData } from "@/types/Types";
 import { Box } from "@mui/material";
-import Cookies from "js-cookie";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { ReactNode } from "react";
+import { useSelector } from "react-redux";
 import DrawerComponent from "../components/drawer/Drawer";
+import Header from "./header/Header";
 
-const Layout = ({ children }: any) => {
-  const selectedId = useSelector((state: any) => state?.data?.selectedId);
-  const podcasts = useSelector((state: any) => state?.data?.jsonData);
-  const router = useRouter();
+const Layout = ({ children }: { children: ReactNode }) => {
+  const selectedId = useSelector((state: RootState) => state?.data?.selectedId);
+  const podcasts:Podcast[] = useSelector(
+    (state: { data: { jsonData: Podcast[] } }) => state?.data?.jsonData
+  );
+    const router = useRouter();
   const pagesToShowAudio = ["/", "/recents", "/dashboard"];
   const shouldShowAudio = pagesToShowAudio.includes(router.pathname);
-  const dispatch = useDispatch();
 
-  const Podcast = podcasts?.find(
-    (data: { id: any }) => data?.id === Number(selectedId)
-  );
-  console.log(selectedId, "selectedId");
-  const [userData, setUserData] = React.useState(null);
+  // const podcast= podcasts?.find(
+  //   (data: { id: number }) => data?.id === Number(selectedId)
+  // );
+  const podcast = podcasts?.find((data: { id: number }) => data?.id === Number(selectedId)) ?? null;
 
-  React.useEffect(() => {
-    const userData = Cookies.get("user");
-    if (userData) {
-      try {
-        const parsedData = JSON.parse(userData);
-        setUserData(parsedData);
-      } catch (error) {
-        console.error("Error parsing 'user' cookie:", error);
-      }
-    } else {
-      console.error("The 'user' cookie is not set or is empty.");
-    }
-  }, []);
 
-  const audioRef = React.useRef<any>();
-  const isPlaying = useSelector((state: any) => state?.data?.isPlaying);
-  // useEffect(() => {
-  //   if (userData) {
-  //     dispatch(setSelectedId(null));
-  //   }
-  // }, []);
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
+  const isPlaying = useSelector((state: RootState) => state?.data?.isPlaying);
 
   return (
     <Box>
@@ -53,7 +37,7 @@ const Layout = ({ children }: any) => {
             display: "flex",
             justifyContent: "center",
             width: "100%",
-            background: "#141728",
+            background: theme.colors.BgPrimary,
             position: "relative",
           }}
         >
@@ -69,14 +53,24 @@ const Layout = ({ children }: any) => {
               }}
             >
               <Audio
-                podcast={Podcast}
+                podcast={podcast}
                 audioRef={audioRef}
-                isPlaying={isPlaying}
-                selectedId={selectedId}
               />
             </Box>
           )}
-          {children}
+          <Box
+            sx={{
+              display: "flex",
+              width: "80vw",
+              color: theme.colors.TextPrimary,
+              mt: 4,
+              flexDirection: "column",
+              background: theme.colors.BgPrimary,
+            }}
+          >
+            <Header />
+            {children}
+          </Box>
         </Box>
       </Box>
     </Box>

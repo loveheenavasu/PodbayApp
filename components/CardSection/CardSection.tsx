@@ -4,23 +4,21 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Link from "next/link";
-import {
-
-  setData,
-} from "@/redux/Slice";
+import { setData } from "@/redux/Slice";
 import { useDispatch, useSelector } from "react-redux";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import Cookies from "js-cookie";
+import theme from "@/theme/Theme";
+import { Podcast, PodcastData } from "@/types/Types";
+import { RootState } from "@/redux/Store";
 
 const CardSection = () => {
   const dispatch = useDispatch();
-  const podcasts: any = useSelector(
-    (state: { data: { jsonData: any } }) => state?.data?.jsonData
+  const podcasts: Podcast[] = useSelector(
+    (state: { data: { jsonData: Podcast[] } }) => state?.data?.jsonData
   );
-  const [userData, setUserData] = React.useState(null);
-
-  const [loading, setLoading] = useState(false);
+  const userData = useSelector((state: RootState) => state?.data?.userData);
+  const [loading, setLoading] = useState<Boolean>(false);
   const fetchPodcasts = () => {
     const jsonUrl = "/podbay.json";
     setLoading(true);
@@ -54,28 +52,17 @@ const CardSection = () => {
     return color;
   }
 
-  React.useEffect(() => {
-    const userData = Cookies.get("user");
-    if (userData) {
-      try {
-        const parsedData = JSON.parse(userData);
-        setUserData(parsedData);
-      } catch (error) {
-        console.error("Error parsing 'user' cookie:", error);
-      }
-    } else {
-      console.error("The 'user' cookie is not set or is empty.");
-    }
-  }, []);
-
-
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "column", mt: 5 }}>
-        <Typography sx={{ color: "#fff", fontSize: "18px", mb: 0.2 }}>
+        <Typography
+          sx={{ color: theme.colors.TextPrimary, fontSize: "18px", mb: 0.2 }}
+        >
           Trending podcasts in all geners
         </Typography>
-        <Typography sx={{ color: "gray", fontSize: "15px", mb: 2 }}>
+        <Typography
+          sx={{ color: theme.colors.TextGray, fontSize: "15px", mb: 2 }}
+        >
           The most popular podcasts overall now
         </Typography>
       </Box>
@@ -90,7 +77,10 @@ const CardSection = () => {
         {loading ? (
           <>
             <Backdrop
-              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              sx={{
+                color: theme.colors.TextPrimary,
+                zIndex: (theme) => theme.zIndex.drawer + 1,
+              }}
               open={true}
             >
               <CircularProgress color="inherit" />
@@ -98,7 +88,7 @@ const CardSection = () => {
           </>
         ) : (
           <>
-            {podcasts?.map((data: any) => {
+            {podcasts?.map((data: PodcastData) => {
               const fontColor = getRandomColor();
               const { id } = data;
 
@@ -122,7 +112,10 @@ const CardSection = () => {
                           <CardContent>
                             <Typography
                               component="div"
-                              sx={{ fontSize: "15px", color: "#fff" }}
+                              sx={{
+                                fontSize: "15px",
+                                color: theme.colors.TextPrimary,
+                              }}
                             >
                               {`#${data?.id}`}
                               {data.title.length > 20
@@ -160,7 +153,10 @@ const CardSection = () => {
                               <CardContent>
                                 <Typography
                                   component="div"
-                                  sx={{ fontSize: "15px", color: "#fff" }}
+                                  sx={{
+                                    fontSize: "15px",
+                                    color: theme.colors.TextPrimary,
+                                  }}
                                 >
                                   {`#${data?.id}`}
                                   {data.title.length > 20

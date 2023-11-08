@@ -7,7 +7,6 @@ import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import PublicIcon from "@mui/icons-material/Public";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -15,13 +14,12 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import WidgetsIcon from "@mui/icons-material/Widgets";
 import Image from "next/image";
 import Link from "next/link";
+import theme from "@/theme/Theme";
 
 export default function DrawerComponent() {
-
- 
   return (
     <Drawer
-      sx={{ display: "flex", width: "18vw", backgroundColor: "#141423" }}
+      sx={{ display: "flex", width: "18vw", backgroundColor: theme.colors.BgSecondry }}
       variant="permanent"
       anchor="left"
       className="drawer-parent"
@@ -34,10 +32,10 @@ export default function DrawerComponent() {
         <ListItem disablePadding sx={{ mb: 0.4 }}>
           <ListItemButton>
             <ListItemIcon sx={{ minWidth: "40px" }}>
-              <PublicIcon sx={{ color: "#fff", fontSize: "15px" }} />
+              <PublicIcon sx={{ color: theme.colors.TextPrimary, fontSize: "15px" }} />
             </ListItemIcon>
             <Typography sx={{ fontSize: "14px", fontWeight: 500 }}>
-              <Link href="/" style={{ textDecoration: "none", color: "#fff" }}>
+              <Link href="/" style={{ textDecoration: "none", color: theme.colors.TextPrimary }}>
                 {" "}
                 Home
               </Link>
@@ -47,7 +45,7 @@ export default function DrawerComponent() {
         <ListItem disablePadding sx={{ mb: 0.4 }}>
           <ListItemButton>
             <ListItemIcon sx={{ minWidth: "40px" }}>
-              <RocketLaunchIcon sx={{ color: "#fff", fontSize: "15px" }} />
+              <RocketLaunchIcon sx={{ color: theme.colors.TextPrimary, fontSize: "15px" }} />
             </ListItemIcon>
             <Typography sx={{ fontSize: "14px", fontWeight: 500 }}>
               Discover
@@ -70,7 +68,7 @@ export default function DrawerComponent() {
         <ListItem disablePadding sx={{ mb: 0.4 }}>
           <ListItemButton>
             <ListItemIcon sx={{ minWidth: "40px" }}>
-              <MenuIcon sx={{ color: "#fff", fontSize: "15px" }} />
+              <MenuIcon sx={{ color: theme.colors.TextPrimary, fontSize: "15px" }} />
             </ListItemIcon>
             <Typography sx={{ fontSize: "14px", fontWeight: 500 }}>
               My Queue
@@ -80,7 +78,7 @@ export default function DrawerComponent() {
         <ListItem disablePadding sx={{ mb: 0.4 }}>
           <ListItemButton>
             <ListItemIcon sx={{ minWidth: "40px" }}>
-              <WidgetsIcon sx={{ color: "#fff", fontSize: "15px" }} />
+              <WidgetsIcon sx={{ color: theme.colors.TextPrimary, fontSize: "15px" }} />
             </ListItemIcon>
             <Typography sx={{ fontSize: "14px", fontWeight: 500 }}>
               My Podcast
@@ -90,11 +88,11 @@ export default function DrawerComponent() {
         <ListItem disablePadding>
           <ListItemButton>
             <ListItemIcon sx={{ minWidth: "40px" }}>
-              <AccessTimeIcon sx={{ color: "#fff", fontSize: "15px" }} />
+              <AccessTimeIcon sx={{ color: theme.colors.TextPrimary, fontSize: "15px" }} />
             </ListItemIcon>
             <Link
               href="/recents"
-              style={{ textDecoration: "none", color: "#fff" }}
+              style={{ textDecoration: "none", color: theme.colors.TextPrimary }}
             >
               {" "}
               Recents

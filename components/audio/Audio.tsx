@@ -1,6 +1,7 @@
 "use client";
+
 import { Box, Button, Grid, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { RefObject, useEffect, useState } from "react";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
@@ -12,20 +13,28 @@ import {
   setCurrentDuration,
   setCurrentPlaybackTime,
   setIsPlaying,
-  setRecent,
-  setSelectedId,
 } from "@/redux/Slice";
 import { useDispatch, useSelector } from "react-redux";
+import theme from "@/theme/Theme";
+import { PodcastData } from "@/types/Types";
+import { RootState } from "@/redux/Store";
 
-const Audio = ({ audioRef, podcast, id }: any) => {
-  const [currentTime, setCurrentTime] = useState(0);
+type AudioRef = RefObject<HTMLAudioElement>;
+
+
+type AudioProps = {
+  audioRef:AudioRef;
+  podcast: PodcastData | null;
+  id?: string | undefined ;
+};
+
+const Audio = ({ audioRef, podcast, id }: AudioProps) => {
   const dispatch = useDispatch();
-  const isPlaying = useSelector((state: any) => state?.data?.isPlaying);
-  const selectedId = useSelector((state: any) => state?.data?.selectedId);
+  const isPlaying = useSelector((state: RootState) => state?.data?.isPlaying);
   const currentPlaybackTime = useSelector(
-    (state: any) => state?.data?.currentPlaybackTime
+    (state: RootState) => state?.data?.currentPlaybackTime
   );
-  const duration = useSelector((state: any) => state?.data?.duration);
+  const duration = useSelector((state: RootState) => state?.data?.duration);
 
   const skipBack = () => {
     if (audioRef.current) {
@@ -78,7 +87,6 @@ const Audio = ({ audioRef, podcast, id }: any) => {
     }
   };
 
-
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.addEventListener("timeupdate", updateProgressBar);
@@ -91,38 +99,42 @@ const Audio = ({ audioRef, podcast, id }: any) => {
     };
   }, []);
 
-  const handleProgressBarClick = (e: any) => {
-    const progressBar = e.target;
-    const rect = progressBar.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const width = rect.width;
-    const seekTime = (offsetX / width) * duration;
-    audioRef.current.currentTime = seekTime;
+  const handleProgressBarClick = (e: React.MouseEvent) => {
+    if (audioRef?.current) {
+      const progressBar = e.target as HTMLElement;
+      const rect = progressBar.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left;
+      const width = rect.width;
+      const seekTime = (offsetX / width) * duration;
+      audioRef.current.currentTime = seekTime;
+    }
   };
 
   useEffect(() => {
-    if (isPlaying) {
-      audioRef.current.currentTime = currentPlaybackTime;
-      audioRef.current.play();
-    } else {
-      audioRef.current.pause();
+    if (audioRef?.current) {
+      if (isPlaying) {
+        audioRef.current.currentTime = currentPlaybackTime;
+        audioRef.current.play();
+      } else {
+        audioRef.current.pause();
+      }
     }
   }, [isPlaying]);
 
   const toggleAudio = () => {
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      if (podcast?.audio && typeof podcast.audio === "string") {
-        audioRef.current.src = podcast?.audio;
-        audioRef.current.play();
-        // dispatch(setCurrentPlaybackTime(audioRef.current.currentTime));
-        // dispatch(setRecent(podcast));
-        // dispatch(setSelectedId(id));
+    if (audioRef?.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
       } else {
-        console.error("Invalid audio URL");
+        if (podcast?.audio && typeof podcast.audio === "string") {
+          audioRef.current.src = podcast?.audio;
+          audioRef.current.play();
+        } else {
+          console.error("Invalid audio URL");
+        }
       }
     }
+
     dispatch(setIsPlaying(!isPlaying));
   };
 
@@ -152,11 +164,17 @@ const Audio = ({ audioRef, podcast, id }: any) => {
           >
             <img src={podcast?.image} alt="" height={70} width={80} />
             <Box>
-              <Typography sx={{ fontSize: "13px", mb: 0, color: "#fff" }}>
+              <Typography
+                sx={{
+                  fontSize: "13px",
+                  mb: 0,
+                  color: theme.colors.TextPrimary,
+                }}
+              >
                 {podcast?.title}
               </Typography>
               <Typography
-                sx={{ fontSize: "11px", color: "#fff" }}
+                sx={{ fontSize: "11px", color: theme.colors.TextPrimary }}
               >{`${podcast?.description.slice(1, 24)}...`}</Typography>
             </Box>
           </Grid>
@@ -170,7 +188,10 @@ const Audio = ({ audioRef, podcast, id }: any) => {
                   justifyContent: "center",
                 }}
               >
-                <Button onClick={skipBack} sx={{ color: "#fff" }}>
+                <Button
+                  onClick={skipBack}
+                  sx={{ color: theme.colors.TextPrimary }}
+                >
                   15
                   <KeyboardBackspaceIcon fontSize="small" />
                 </Button>
@@ -181,9 +202,13 @@ const Audio = ({ audioRef, podcast, id }: any) => {
                   sx={{ margin: 0, color: "#fff" }}
                 >
                   {isPlaying ? (
-                    <PauseIcon sx={{ color: "#fff", margin: 0 }} />
+                    <PauseIcon
+                      sx={{ color: theme.colors.TextPrimary, margin: 0 }}
+                    />
                   ) : (
-                    <PlayArrowIcon sx={{ color: "#fff", margin: 0 }} />
+                    <PlayArrowIcon
+                      sx={{ color: theme.colors.TextPrimary, margin: 0 }}
+                    />
                   )}
                 </Button>
                 <Button onClick={skipForward} sx={{ color: "#fff" }}>
@@ -227,7 +252,9 @@ const Audio = ({ audioRef, podcast, id }: any) => {
                   className="time-display"
                   style={{ position: "absolute", top: "20px", left: "25%" }}
                 >
-                  <Typography sx={{ fontSize: "12px", color: "#fff" }}>
+                  <Typography
+                    sx={{ fontSize: "12px", color: theme.colors.TextPrimary }}
+                  >
                     {duration && currentPlaybackTime ? (
                       <>
                         {formatTime(currentPlaybackTime)} /{" "}
@@ -251,11 +278,20 @@ const Audio = ({ audioRef, podcast, id }: any) => {
               }}
             >
               <Button onClick={decreaseSpeed} disabled={currentSpeed <= 1}>
-                <VolumeMute sx={{ color: "#fff" }} fontSize="small" />
+                <VolumeMute
+                  sx={{ color: theme.colors.TextPrimary }}
+                  fontSize="small"
+                />
               </Button>
-              <Typography sx={{ color: "#fff" }}> {currentSpeed}%</Typography>
+              <Typography sx={{ color: theme.colors.TextPrimary }}>
+                {" "}
+                {currentSpeed}%
+              </Typography>
               <Button onClick={increaseSpeed} disabled={currentSpeed >= 100}>
-                <VolumeUpIcon sx={{ color: "#fff" }} fontSize="small" />
+                <VolumeUpIcon
+                  sx={{ color: theme.colors.TextPrimary }}
+                  fontSize="small"
+                />
               </Button>
             </Box>
 
@@ -266,7 +302,10 @@ const Audio = ({ audioRef, podcast, id }: any) => {
                 justifyContent: "center",
               }}
             >
-              <Button onClick={stopAudio} sx={{ color: "#fff" }}>
+              <Button
+                onClick={stopAudio}
+                sx={{ color: theme.colors.TextPrimary }}
+              >
                 <StopIcon /> STOP
               </Button>
             </Box>

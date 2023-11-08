@@ -8,7 +8,8 @@ const dataSlice = createSlice({
     recent: null,
     isPlaying: false,
     currentPlaybackTime: 0,
-    duration:0
+    duration:0,
+    userData:null
   },
   reducers: {
     setData: (state, action) => {
@@ -32,6 +33,10 @@ const dataSlice = createSlice({
     setCurrentDuration: (state, action) => {
       state.duration = action.payload;
     },
+    setUserData: (state,action)=>{
+      state.userData = action.payload
+
+    }
   },
 });
 
@@ -42,6 +47,7 @@ export const {
   setIsPlaying,
   setCurrentPlaybackTime,
   setCurrentDuration,
-  resetCurrentPlaybackTime
+  resetCurrentPlaybackTime,
+  setUserData
 } = dataSlice.actions;
 export default dataSlice.reducer;

@@ -2,15 +2,11 @@
 import Layout from "@/layout/Layout";
 import { Box } from "@mui/material";
 import React from "react";
-import CardSection from "../CardSection/CardSection";
-import Header from "./children/Header";
+import CardSection from "../cardSection/CardSection";
 import {  ToastContainer } from "react-toastify";
-import { useRouter } from "next/router";
+import theme from "@/theme/Theme";
 
 const HomePage = () => {
-  const router = useRouter()
-
-
   return (
     <Layout>
       <ToastContainer autoClose={4000} />
@@ -18,12 +14,11 @@ const HomePage = () => {
         sx={{
           display: "flex",
           width: "80vw",
-          color: "#fff",
+          color: theme.colors.TextPrimary,
           mt: 4,
           flexDirection: "column",
         }}
       >
-        <Header />
         <CardSection />
       </Box>
     </Layout>

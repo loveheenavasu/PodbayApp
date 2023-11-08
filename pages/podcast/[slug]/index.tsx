@@ -22,9 +22,11 @@ import {
 } from "@/redux/Slice";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import Header from "@/components/home/children/Header";
 import LoginModal from "@/components/loginModal/LoginModal";
 import Cookies from "js-cookie";
+import theme from "@/theme/Theme";
+import { RootState } from "@/redux/Store";
+import { Podcast, PodcastData, UserData } from "@/types/Types";
 
 export default function PodCastDetail({
   params,
@@ -32,34 +34,22 @@ export default function PodCastDetail({
   params: { slug: string };
 }) {
   const router = useRouter();
-  const isPlaying = useSelector((state: any) => state?.data?.isPlaying);
-  const audioRef = React.useRef<any>();
+  const isPlaying = useSelector((state: RootState) => state?.data?.isPlaying);
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
-  const [open, setOpen] = React.useState(false);
-  const [Podcast, setPodcast] = useState<any>(null);
+  const [open, setOpen] = useState(false);
+  const [podcast, setPodcast] = useState<PodcastData | null>(null);
   const [showPlay, setShowPlay] = useState(false);
   const id = router?.query?.slug;
   const podcastsData = useSelector(
-    (state: { data: { jsonData: any } }) => state?.data?.jsonData
+    (state: { data: { jsonData: Podcast[] } }) => state?.data?.jsonData
   );
 
-  const [userData, setUserData] = React.useState(null);
+  const userData = useSelector((state: RootState) => state?.data?.userData) as unknown as UserData;
 
-  React.useEffect(() => {
-    const userData = Cookies.get("user");
-    if (userData) {
-      try {
-        const parsedData = JSON.parse(userData);
-        setUserData(parsedData);
-      } catch (error) {
-        console.error("Error parsing 'user' cookie:", error);
-      }
-    } else {
-      console.error("The 'user' cookie is not set or is empty.");
-    }
-  }, []);
+  
 
   const fetchPodcasts = () => {
     const jsonUrl = "/podbay.json";
@@ -89,7 +79,7 @@ export default function PodCastDetail({
   useEffect(() => {
     if (id) {
       const fetchPodcast = podcastsData?.find(
-        (data: { id: any }) => data?.id === Number(id)
+        (data: { id: number }) => data?.id === Number(id)
       );
       if (fetchPodcast) {
         setPodcast(fetchPodcast);
@@ -111,14 +101,18 @@ export default function PodCastDetail({
 
   const toggleAudio = () => {
     if (isPlaying) {
-      audioRef.current.pause();
+      audioRef?.current?.pause();
     } else {
-      if (Podcast?.audio && typeof Podcast.audio === "string") {
-        audioRef.current.src = Podcast?.audio;
-        audioRef.current.play();
-        dispatch(setCurrentPlaybackTime(audioRef.current.currentTime));
-        dispatch(setRecent(Podcast));
-        dispatch(setSelectedId(id));
+      if (podcast?.audio && typeof podcast?.audio === "string") {
+        if (audioRef?.current) {
+          audioRef.current.src = podcast?.audio;
+          audioRef?.current?.play();
+          dispatch(setCurrentPlaybackTime(audioRef?.current?.currentTime));
+          dispatch(setRecent(podcast));
+          dispatch(setSelectedId(id));
+        } else {
+          console.error("audioRef.current is null");
+        }
       } else {
         console.error("Invalid audio URL");
       }
@@ -130,10 +124,8 @@ export default function PodCastDetail({
   }, [id]);
   useEffect(() => {
     dispatch(setSelectedId(id));
-    dispatch(setRecent(Podcast))
-  }, [id,Podcast]);
-
-  
+    dispatch(setRecent(podcast));
+  }, [id, podcast]);
 
   useEffect(() => {
     let timer: string | number | NodeJS.Timeout | undefined;
@@ -162,7 +154,7 @@ export default function PodCastDetail({
         <Box
           sx={{
             display: "flex",
-            color: "#fff",
+            color: theme.colors.TextPrimary,
             flexDirection: "column",
             background: "#1c1b2e",
             margin: 0,
@@ -172,7 +164,10 @@ export default function PodCastDetail({
           }}
         >
           <Backdrop
-            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            sx={{
+              color: theme.colors.TextPrimary,
+              zIndex: (theme) => theme.zIndex.drawer + 1,
+            }}
             open={true}
           >
             <CircularProgress color="inherit" />
@@ -183,16 +178,16 @@ export default function PodCastDetail({
           <Box
             sx={{
               display: "flex",
-              color: "#fff",
+              color: theme.colors.TextPrimary,
               flexDirection: "column",
               background: "#1c1b2e",
               margin: 0,
               width: "100%",
               padding: "27px 13px",
               position: "relative",
+              height: "100vh",
             }}
           >
-            <Header />
             <Card
               sx={{
                 maxWidth: "95%",
@@ -222,7 +217,7 @@ export default function PodCastDetail({
               >
                 <CardMedia
                   sx={{ width: "200px", height: "150px" }}
-                  image={Podcast?.image}
+                  image={podcast?.image}
                   title="green iguana"
                 />
                 {showPlay && (
@@ -247,16 +242,16 @@ export default function PodCastDetail({
                   gutterBottom
                   variant="h5"
                   component="div"
-                  sx={{ color: "#fff" }}
+                  sx={{ color: theme.colors.TextPrimary }}
                 >
-                  {Podcast?.title}
+                  {podcast?.title}
                 </Typography>
                 <Typography
                   variant="body2"
                   color="text.secondary"
-                  sx={{ color: "#fff" }}
+                  sx={{ color: theme.colors.TextPrimary }}
                 >
-                  {Podcast?.description}
+                  {podcast?.description}
                 </Typography>
               </CardContent>
             </Card>
@@ -270,14 +265,7 @@ export default function PodCastDetail({
                 padding: "10px 0",
               }}
             >
-              <Audio
-                audioRef={audioRef}
-                podcast={Podcast}
-                isPlaying={isPlaying}
-                setIsPlaying={setIsPlaying}
-                id={id}
-                userData={userData}
-              />
+              <Audio audioRef={audioRef} podcast={podcast} id={id as string} />
             </Box>
           </Box>
         </>

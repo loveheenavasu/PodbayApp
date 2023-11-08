@@ -5,6 +5,8 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Link from "next/link";
+import theme from "@/theme/Theme";
+import { LoginModalProps } from "@/types/Types";
 
 const style = {
   position: "absolute" as "absolute",
@@ -17,7 +19,7 @@ const style = {
   borderRadius: "10px",
 };
 
-export default function LoginModal({ open, setOpen }: any) {
+const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -34,7 +36,7 @@ export default function LoginModal({ open, setOpen }: any) {
             id="modal-modal-title"
             variant="h6"
             component="h2"
-            sx={{ color: "#fff" }}
+            sx={{ color: theme.colors.TextPrimary }}
           >
             Continue With Login to{" "}
             <span
@@ -55,7 +57,7 @@ export default function LoginModal({ open, setOpen }: any) {
             <Link
               href="/login"
               style={{
-                color: "#fff",
+                color: theme.colors.TextPrimary,
                 textDecoration: "none ",
                 fontWeight: 600,
                 border: "1px solid #fff",
@@ -70,4 +72,6 @@ export default function LoginModal({ open, setOpen }: any) {
       </Modal>
     </div>
   );
-}
+};
+
+export default LoginModal;
