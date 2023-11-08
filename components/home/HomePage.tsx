@@ -2,9 +2,9 @@
 import Layout from "@/layout/Layout";
 import { Box } from "@mui/material";
 import React from "react";
-import CardSection from "../cardSection/CardSection";
 import {  ToastContainer } from "react-toastify";
 import theme from "@/theme/Theme";
+import CardSection from "../cardSection/CardSection";
 
 const HomePage = () => {
   return (
