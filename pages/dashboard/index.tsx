@@ -6,12 +6,15 @@ import theme from "@/theme/Theme";
 import { Box } from "@mui/material";
 import Cookies from "js-cookie";
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 
 import { ToastContainer } from "react-toastify";
+import { RootState } from "@/redux/Store";
 
 const Dashboard = () => {
+  const userData = useSelector((state: RootState) => state?.data?.userData);
+
   const dispatch = useDispatch();
   useEffect(() => {
     const userData = Cookies.get("user");
@@ -25,7 +28,7 @@ const Dashboard = () => {
     } else {
       console.error("The 'user' cookie is not set or is empty.");
     }
-  }, []);
+  }, [userData]);
 
   return (
     <>

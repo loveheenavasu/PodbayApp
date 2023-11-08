@@ -14,11 +14,10 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import login from "@/services/authentication";
 import { useDispatch } from "react-redux";
-import { setSelectedId } from "@/redux/Slice";
+import { setSelectedId, setUserData } from "@/redux/Slice";
 import theme from "@/theme/Theme";
 import { FormData } from "@/types/Types";
 import { toast, ToastOptions } from "react-toastify";
-
 
 export default function LoginSection() {
   const router = useRouter();
@@ -46,8 +45,11 @@ export default function LoginSection() {
       Cookies.set("authToken", token);
       const userData = JSON.stringify(response?.data?.user);
       Cookies.set("user", userData);
-      const redirectTo: any  = router.query.redirect || "/";
+      const parsedData = JSON.parse(userData);
+
+      const redirectTo: any = router.query.redirect || "/";
       dispatch(setSelectedId(null));
+      dispatch(setUserData(parsedData));
       router.push(redirectTo);
       toast.success(`You Login  Sucessfully`, {
         duration: 60000,
