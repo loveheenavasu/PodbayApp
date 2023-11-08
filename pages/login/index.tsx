@@ -1,5 +1,5 @@
 "use client";
-import LoginSection from "@/components/login/LoginSection";
+import LoginSection from "@/components/Login/LoginSection";
 import Layout from "@/layout/Layout";
 import { Box } from "@mui/material";
 import React from "react";
