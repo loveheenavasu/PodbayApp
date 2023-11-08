@@ -1,5 +1,5 @@
 "use client";
-import CardSection from "@/components/cardSection/CardSection";
+import CardSection from "@/components/CardSection/CardSection";
 import Layout from "@/layout/Layout";
 import { setUserData } from "@/redux/Slice";
 import theme from "@/theme/Theme";

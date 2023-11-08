@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import React from "react";
 import {  ToastContainer } from "react-toastify";
 import theme from "@/theme/Theme";
-import CardSection from "../cardSection/CardSection";
+import CardSection from "../CardSection/CardSection";
 
 const HomePage = () => {
   return (
