@@ -8,9 +8,11 @@ import { setData } from "@/redux/Slice";
 import { useDispatch, useSelector } from "react-redux";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import Cookies from "js-cookie";
 import theme from "@/theme/Theme";
 import { Podcast, PodcastData } from "@/types/Types";
 import { RootState } from "@/redux/Store";
+import { AnimatePresence, motion } from "framer-motion";
 
 const CardSection = () => {
   const dispatch = useDispatch();
@@ -88,56 +90,24 @@ const CardSection = () => {
           </>
         ) : (
           <>
-            {podcasts?.map((data: PodcastData) => {
-              const fontColor = getRandomColor();
-              const { id } = data;
+            <AnimatePresence>
+              {podcasts?.map((data: PodcastData, i) => {
+                const fontColor = getRandomColor();
+                const { id } = data;
 
-              return (
-                <>
-                  <Link href={`podcast/${id}`}>
-                    {userData ? (
-                      <>
-                        <Card
-                          sx={{
-                            maxWidth: 255,
-                            mb: 2,
-                            background: "transparent",
-                          }}
-                        >
-                          <CardMedia
-                            sx={{ height: 245 }}
-                            image={data.image}
-                            title="green iguana"
-                          />
-                          <CardContent>
-                            <Typography
-                              component="div"
-                              sx={{
-                                fontSize: "15px",
-                                color: theme.colors.TextPrimary,
-                              }}
-                            >
-                              {`#${data?.id}`}
-                              {data.title.length > 20
-                                ? `${data.title.slice(0, 20)}...`
-                                : data.title}
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              sx={{ color: fontColor, fontSize: "13px" }}
-                            >
-                              {data.description.length > 20
-                                ? `${data.description.slice(0, 30)}`
-                                : data.description}
-                            </Typography>
-                          </CardContent>
-                        </Card>
-                      </>
-                    ) : (
-                      <>
-                        {data?.isFree ? (
-                          <>
+                return (
+                  <>
+                    <Link href={`podcast/${id}`}>
+                      {userData ? (
+                        <>
+                          <motion.div
+                            style={{ overflow: "hidden" }}
+                            key={i}
+                            layout
+                            initial={{ transform: "scale(0)" }}
+                            animate={{ transform: "scale(1)" }}
+                            exit={{ transform: "scale(0)" }}
+                          >
                             <Card
                               sx={{
                                 maxWidth: 255,
@@ -174,14 +144,69 @@ const CardSection = () => {
                                 </Typography>
                               </CardContent>
                             </Card>
-                          </>
-                        ) : null}
-                      </>
-                    )}
-                  </Link>
-                </>
-              );
-            })}
+                          </motion.div>
+                        </>
+                      ) : (
+                        <>
+                          {data?.isFree ? (
+                            <>
+                              <motion.div
+                                style={{ overflow: "hidden" }}
+                                key={i}
+                                layout
+                                initial={{ transform: "scale(0)" }}
+                                animate={{ transform: "scale(1)" }}
+                                exit={{ transform: "scale(0)" }}
+                              >
+                                <Card
+                                  sx={{
+                                    maxWidth: 255,
+                                    mb: 2,
+                                    background: "transparent",
+                                  }}
+                                >
+                                  <CardMedia
+                                    sx={{ height: 245 }}
+                                    image={data.image}
+                                    title="green iguana"
+                                  />
+                                  <CardContent>
+                                    <Typography
+                                      component="div"
+                                      sx={{
+                                        fontSize: "15px",
+                                        color: theme.colors.TextPrimary,
+                                      }}
+                                    >
+                                      {`#${data?.id}`}
+                                      {data.title.length > 20
+                                        ? `${data.title.slice(0, 20)}...`
+                                        : data.title}
+                                    </Typography>
+                                    <Typography
+                                      variant="body2"
+                                      color="text.secondary"
+                                      sx={{
+                                        color: fontColor,
+                                        fontSize: "13px",
+                                      }}
+                                    >
+                                      {data.description.length > 20
+                                        ? `${data.description.slice(0, 30)}`
+                                        : data.description}
+                                    </Typography>
+                                  </CardContent>
+                                </Card>
+                              </motion.div>
+                            </>
+                          ) : null}
+                        </>
+                      )}
+                    </Link>
+                  </>
+                );
+              })}
+            </AnimatePresence>
           </>
         )}
       </Box>

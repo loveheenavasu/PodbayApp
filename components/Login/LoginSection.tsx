@@ -18,6 +18,7 @@ import { setSelectedId, setUserData } from "@/redux/Slice";
 import theme from "@/theme/Theme";
 import { FormData } from "@/types/Types";
 import { toast, ToastOptions } from "react-toastify";
+import { signIn, useSession } from "next-auth/react";
 
 export default function LoginSection() {
   const router = useRouter();
@@ -59,6 +60,17 @@ export default function LoginSection() {
       console.log("Error");
     }
   };
+
+
+    const { data: session } = useSession();
+  
+    const handleSignInWithApple = async () => {
+      if (!session) {
+        // Initiate the sign-in process with Apple
+        await signIn("apple");
+      }
+    };
+  
 
   return (
     <>
@@ -203,6 +215,7 @@ export default function LoginSection() {
                 color: "#fff",
                 textTransform: "capitalize",
               }}
+              onClick={handleSignInWithApple}
             >
               <AppleIcon sx={{ mr: 1 }} /> continue with Apple
             </Button>
